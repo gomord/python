@@ -16,8 +16,19 @@ def isPointInPoligon(p,pol):
     l = len(pol)
     res = 0
     for i in range(l):
-        print pol[i%l],pol[(i+1)%l]
-        inter = calc_intersec_line(pol[i%l],pol[(i+1)%l],p,array([0,p[1]]))
+        p1 = pol[i%l]
+        p2 = pol[(i+1)%l]
+        if p2[1] == p1[1] == p[1]:
+            diff = (pol[(i-1)%l][1] - p2[1])*(pol[(i+2)%l][1] - p2[1])
+            if diff > 0:
+                res ^= 1
+            elif diff < 0:
+                continue
+            else
+                raise
+            
+            
+        inter = calc_intersec_line(p1,p2,p,array([0,p[1]]))
         print inter
         if inter != None and inter[0][0] >= p[0] and 0 <= inter[1] <= 1:  
             res ^= 1
