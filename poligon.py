@@ -37,12 +37,27 @@ def isPointInPoligon(p,pol):
             intersecLines.append(inter[0])
             res ^= 1
     return res,intersecLines
-po = np.array([50,50])
-points = np.array([[0,0],[0,100],[100,100],[100,0]])
+def make_poligon(i,is_str = False):
+    ret = []
+    max_x = (i&~1)
+    for i in range(1,max_x):
+        if is_str:
+            print "[%d,%d],"%((i*20),20+(i%2)*20),
+        else:
+            ret.append([i*20,20+(i%2)*20])
+    if is_str:
+        print "[%d,%d],"%((max_x - 20)/2,100),
+    else:
+        ret.append([(max_x*20 - 20)/2,100])
+        return ret
+        
+po = np.array([40,30])
+points = np.array(make_poligon(20))
+
 res, inter =  isPointInPoligon(po,points)
 inter = map(lambda ar:ar.astype(int),inter)
-sorted(inter,key=lambda x:x[0])
-print inter
+inter= sorted(inter,key=lambda x:x[0])
+print "inter" , inter
 
 # Create a black image
 img = np.zeros((512,512,3), np.uint8)
@@ -54,14 +69,21 @@ pts = points
 cv2.polylines(img,[pts],True,(0,255,255))
 colers = ((0,255,200),(100,100,100))
 co = 0
+last = po
 for p in inter:
-    cv2.line(img,tuple(po.astype(int)),tuple(p),colers[co])
+    
+    print "co",co
+    cv2.line(img,tuple(last.astype(int)),tuple(p),colers[co])
+    last = p
     co ^=  1
     
 print "co",co
 if len(inter) == 0:
-    cv2.line(img,po,np.array([po[0],1000]),colers[co])
+    cv2.line(img,tuple(po),(po[0],1000),colers[co])
 else:
+    print "co --",co
+
+    print tuple(inter[-1]),tuple(np.array((1000,inter[-1][1])))
     cv2.line(img,tuple(inter[-1]),tuple(np.array((1000,inter[-1][1]))),colers[co])
              
 cv2.namedWindow('img', cv2.CV_WINDOW_AUTOSIZE)
